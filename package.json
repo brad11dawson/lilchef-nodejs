@@ -1,7 +1,7 @@
 {
-  "name": "node-js-getting-started",
+  "name": "lil-chef-nodejs",
   "version": "0.3.0",
-  "description": "A sample Node.js app using Express 4",
+  "description": "A cooking recipe sharing website built with nodejs and express",
   "engines": {
     "node": "10.x"
   },
@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "ejs": "^2.5.6",
-    "express": "^4.15.2"
+    "express": "^4.15.2",
+    "pg": "^7.8.2"
   },
   "devDependencies": {
     "request": "^2.81.0",
