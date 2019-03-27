@@ -1,29 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="./client-nav.js"></script>
   <% include ../partials/header.ejs %>
 </head>
+
 
 <body class="bg-dark">
   <header>
     <% include ../partials/head.ejs %>
   </header>
-
-    <div class="container my-primary text-center py-1 my-3">
-      <div class="row" id="left">
-        <div class="col-sm-3">
-          <h2>Left column</h2>
+    <div class="my-primary text-center py-1">
+      <div class="row mx-0">
+        <div class="col-sm-3" id="left">
+          <h2>Explore</h2>
+          <% include ../partials/nav.ejs %>
         </div>
-        <div class="col-sm-6" id="main">
-          <h2>Recipes:</h2>
-          <ul>
-          <div id="recipelist" class="text-left"></div>
-          </ul>
-          <button type="button" id="gettest">Get Recipies Test!</button>
-          <button type="button" id="getrecipies">Get Recipies!</button>          
+        <div class="col-sm-6 bg-secondary" id="main">
+          <h2>Time to Cook!</h2>
+          <% include ../partials/login.ejs %>          
         </div>
         <div class="col-sm-3" id="right">
-          <h2>Right column</h2>
+          <h2>Lil Chef's News</h2>
+          
         </div>
       </div>
     </div>
