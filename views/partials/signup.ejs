@@ -1,12 +1,15 @@
 <h2>Sign Up to become a Lil Chef!</h2>
 <form class="text-center">
     <label for="displayname">display name:</label><br>
+    <p id="displaynameError" class="text-warning"></p>    
     <input type="text" name="displayname">
     <br>
     <label for="username">username: </label><br>
+    <p id="usernameError" class="text-warning"></p>
     <input type="text" name="username">
     <br>
     <label for="password">password: </label><br>
+    <p id="passwordError" class="text-warning"></p>    
     <input type="password" name="password">
     <br/><br/>
     <button type="button" id="createUserButton" onclick="createUser()">Create Account</button>

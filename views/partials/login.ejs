@@ -1,16 +1,17 @@
 <h2>Login to Your Chef's Account!</h2>
 <form class="text-center">
     <label for="username">username: </label><br>
+    <p id="usernameError" class="text-warning"></p>    
     <input type="text" name="username">
     <br>
     <label for="password">password: </label><br>
+    <p id="passwordError" class="text-warning"></p>    
     <input type="password" name="password">
     <br/><br/>
+    <p id="signInError" class="text-warning"></p>
     <button type="button" id="loginButton" onclick="loginUser()">Log In</button>
     <br/><br/>
     <p>Dont have an account yet?</p><br>
     <button type="button" id="goToSignup" onclick="gotoSignup()">Sign up here</button>
     <br/>
-    <p>Log in as a test user here!</p>
-    <button type="button" id="testLogin" onclick="getCookbooks()">Test site Now!</button>
 </form>

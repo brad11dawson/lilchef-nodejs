@@ -1,5 +1,7 @@
 const express = require('express')
 const path = require('path')
+const session = require('express-session')
+
 const PORT = process.env.PORT || 5000
 
 const mainController = require("./controllers/mainController.js");
@@ -26,6 +28,7 @@ express()
   .get('/getUserBooks', bookController.getUserBooks)
   .get('/getRecipesFromBook', recipeController.getRecipeFromBooks)
   .post('/createNewUser', userController.createUser)
+  .post('/loginUser', userController.loginUser)
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
   function getData(req, res) {
@@ -50,3 +53,5 @@ express()
       callback(null, result.rows);
     })
   }
+
+  

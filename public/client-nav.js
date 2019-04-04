@@ -18,26 +18,75 @@ function createUser() {
     var displayName = $("[name='displayname']").val();
     var userName = $("[name='username']").val();
     var password = $("[name='password']").val();
+    var validForm = true;
+    //check to make sure form is filled out
+    if (displayName == "") {
+        $('#displaynameError').html("please enter displayname")
+        validForm = false;
+    } else {
+        $('#displaynameError').html("")
+    }
+    if (userName == "") {
+        $('#usernameError').html("please enter username")
+        validForm = false;
+    } else {
+        $('#usernameError').html("")
+    }
+    if (password == "") {
+        $('#passwordError').html("please enter password")
+        validForm = false;
+    } else {
+        $('#displaynameError').html("")
+    }
 
     console.log("display name is: " + displayName);
     console.log("username is: " + userName);
-
-    $.post("/createNewUser", { displayName: displayName, userName: userName,
-        password: password }, function(html) {
-        console.log("Created a user");
-        $("#main").html("<h2>Account Successfully Created!</h2>");
-        $("#main").append(html);
-    })
+    if (validForm) {
+        $.post("/createNewUser", { displayName: displayName, userName: userName,
+            password: password }, function(html) {
+            console.log("Created a user");
+            $("#main").html("<h2>Account Successfully Created!</h2>");
+            $("#main").append(html);
+        })
+    }
 }
 
 function loginUser() {
     console.log("logging in user");
-    var userName = $("[name='username']").val();
+    var username = $("[name='username']").val();
     var password = $("[name='password']").val();
+    var validForm = true;
+    //check to make sure form is filled out
+    if (username == "") {
+        $('#usernameError').html("please enter a username")
+        validForm = false;
+    } 
+    else {
+        $('#usernameError').html("")
+    }
 
-    $.get("/loginUser", function(html) {
-        console.log("Logged in a user");
-    })
+    if (password == "") {
+        $('#passwordError').html("please enter password")
+        validForm = false;
+    } 
+    else {
+        $('#passwordError').html("")
+    }
+
+    if (validForm) {
+        $.post("/loginUser", { username: username, password: password}, function(validSignIn) {
+            //console.log("Logged in a user");
+            if (validSignIn) {
+                $("#title").html(username + "'s Cookbook");
+                console.log("password was correct");
+                getCookbooks();
+            }
+            else {
+                $('#signInError').html("Either the password was incorrect your the username does not exist. Please try again.");
+                console.log("password was wrong");
+            }
+        })
+    }
 }
 
 function getCookbooks() {
