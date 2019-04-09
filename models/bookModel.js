@@ -16,6 +16,22 @@ function getByUser(id, callback) {
     })
 }
 
+function createBook(book_name, book_description, book_admin, callback) {
+  var sql = "INSERT INTO cookbook(cookbook_name, cookbook_description, cookbook_admin)\
+    VALUES('" + book_name + "', '" + book_description + "', '" + book_admin + "')";
+
+    console.log("sql being used: " + sql);
+    pool.query(sql, function(err, result) {
+      if (err) {
+          callback(true);
+      }
+      else {
+          callback(null);
+      }
+  }) 
+}
+
 module.exports = {
-	getByUser: getByUser,
+  getByUser: getByUser,
+  createBook: createBook
 };

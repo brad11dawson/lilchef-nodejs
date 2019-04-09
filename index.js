@@ -20,6 +20,30 @@ express()
   
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
+  .use(session({
+    secret: 'i am chef',
+    resave: true,
+    saveUninitialized: true,
+    cookie: { secure: false }
+  }))
+  
+  /*.use(
+    function(req, res, next) {
+      console.log("the user id is:" + req.session.userId);
+      next();
+    }
+  )*/
+  .get('/isLoggedIn', function(req, res) {
+    console.log("checking if we are logged in");
+      if (req.session.userId) {
+        console.log("we were logged in")
+        res.send(true);
+      }
+      else {
+        console.log("we are NOT logged int");
+        res.send(false);
+      }
+  })
   .get('/', (req, res) => res.render('pages/index'))
   .get('/getData', getData)
   .get('/getLogin', mainController.getLogin)
@@ -29,6 +53,9 @@ express()
   .get('/getRecipesFromBook', recipeController.getRecipeFromBooks)
   .post('/createNewUser', userController.createUser)
   .post('/loginUser', userController.loginUser)
+  .get('/logOut', userController.logOut)
+  .post('/createNewBook', bookController.createBook)
+  .post('/addNewRecipe', recipeController.addRecipe)
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
 
   function getData(req, res) {

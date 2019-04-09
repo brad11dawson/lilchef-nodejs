@@ -89,25 +89,170 @@ function loginUser() {
     }
 }
 
+function isLoggedIn() {
+    console.log("hello there world im going to check if we are using this function");
+    $.get("/isLoggedIn", function(isLoggedIn) {
+        if(isLoggedIn) {
+            getCookbooks();
+        }
+    })
+}
+window.onload = isLoggedIn;
+
 function getCookbooks() {
     console.log("getting user cookbooks");
-    var userid = 1;
     $.get("/getUserBooks", function(books) {
         console.log("got the users cookbooks");
         $("div#main").html("");
+        $("div#main").append('<div class="container">\
+        <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#addBookForm">Start New Cookbook</button>\
+        <div id="addBookForm" class="collapse my-4">\
+        <form>\
+          <div class="form-group">\
+            <label>Cookbook Name:</label><br/>\
+            <input type="text" name="book_name">\
+          </div>\
+        <br/>\
+        <div class="form-group">\
+          <label for="book_description">Enter Recipe Description</label>\
+          <textarea class="form-control" id="book_description" name="book_description" rows="3" required></textarea>\
+        </div>\
+        <br/>\
+        <p id="formError" class="text-warning"></p>\
+          <button type="button" class="btn btn-primary mb-2" onclick="createBook()">Create New Cookbook!</button>\
+        </form>\
+        </div>\
+      </div>')
           
           //print the recipe name and description for each item in the json list
           $.each(books, function(index) {
             $("div#main").append('<li class="text-left">' + this.cookbook_name + '</li>');
             $("div#main").append('<p class="text-left">' + this.cookbook_description + '</p>');
             $("div#main").append('<button type="button" onclick="getRecipesFromBook(' + this.id + ')">Open Book!</button>');
+            console.log("id of book: " + this.id);
         })
+        $("div#main").append('</br><button type="button" onclick="logOut()">Log Out</button>');
     })
 }
 
-function getRecipesFromBook(id) {
-    console.log("getting recipes " + id);
-    $.get("/getRecipesFromBook", function(recipes) {
-        console.log("gotRecipies");
+function logOut() {
+    $.get("/logOut", function(htmlLogin){
+        $("div#main").html(htmlLogin);
     })
+}
+
+function getRecipesFromBook(book_id) {
+    console.log("getting recipes " + book_id);
+    $.get("/getRecipesFromBook", { book_id : book_id }, function(recipes) {
+        console.log("gotRecipies");
+        $("div#main").html("");
+        $("div#main").append('<div class="container">\
+        <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#addRecipeForm">Add Recipe</button>\
+        <div id="addRecipeForm" class="collapse my-4">\
+        <form">\
+          <div class="form-group">\
+            <label>Recipe Name:</label><br/>\
+            <input type="text" name="recipe_name">\
+          </div>\
+        <br/>\
+        <div class="form-group">\
+          <label for="recipe_description">Enter Recipe Description</label>\
+          <textarea class="form-control" id="recipe_description" name="recipe_description" rows="3" required></textarea>\
+        </div>\
+        <div class="form-group">\
+          <label for="ingrediants">Enter Ingrediants</label>\
+          <textarea class="form-control" id="ingrediants" name="ingrediants" rows="3" required></textarea>\
+        </div>\
+        <div class="form-group">\
+          <label for="directions">Enter cooking instructions</label>\
+          <textarea class="form-control" id="directions" name="directions" rows="3" required></textarea>\
+        </div>\
+        <br/>\
+        <p id="formError" class="text-warning"></p>\
+          <button type="button" class="btn btn-primary mb-2" onclick="addRecipe(' + book_id + ')">Add to Cookbook</button>\
+        </form>\
+        </div>\
+      </div>')
+        $.each(recipes, function(index) {
+            $("div#main").append('<h2 class="text-left">' + this.recipe_name + '</h2>');
+            $("div#main").append('<p class="text-left">' + this.recipe_description + '</p>');
+            $("div#main").append('<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapse' + this.id + '" aria-expanded="false" aria-controls="collapseExample">\
+            Open Delicious Recipe\
+            </button></br>')
+            $("div#main").append('<div class="collapse text-left" id="collapse' + this.id + '">\
+            <div class="card card-body">\
+                <h3>Ingrediants</h3>\
+              ' + this.ingrediants + '\
+              <h3>Cooking Instructions</h3>\
+              ' + this.directions + '\
+            </div>\
+            </div>')
+        })
+        $("div#main").append('</br><button type="button" onclick="getCookbooks()">Go back to books</button>');
+        $("div#main").append('</br><button type="button" onclick="logOut()">Log Out</button>');
+    })  
+}
+
+function createBook() {
+    var book_name = $("[name='book_name']").val();
+    var book_description = $("[name='book_description']").val();
+    var validForm = true;
+
+    if (book_name == "") {
+        validForm = false;
+    }
+    if (book_description == "") {
+        validForm = false
+    }
+    if(validForm) {
+        $("p#formError").html("");
+        console.log("form was valid. creating new book");
+        console.log("new book name is " + book_name);
+        console.log("new book description is " + book_description);
+        $.post("/createNewBook", { book_name : book_name, book_description: book_description }, function() {
+            getCookbooks();
+        })
+    }
+    else {
+        $("p#formError").html("Please fill in both Cookbook name and description to make new book");
+    }
+}
+
+function addRecipe(book_id) {
+    var recipe_name = $("[name='recipe_name']").val();
+    var recipe_description = $("[name='recipe_description']").val();
+    var ingrediants = $("[name='ingrediants']").val();
+    var cooking_instructions = $("[name='directions']").val();
+    var validForm = true;
+
+    if (recipe_name == "") {
+        validForm = false;
+    }
+    if (recipe_description == "") {
+        validForm = false
+    }
+    if (ingrediants == "") {
+        validForm = false;
+    }
+    if (cooking_instructions == "") {
+        validForm = false
+    }
+
+    if(validForm) {
+        console.log("about to add a new recipe for bookid: " + book_id);
+        $("p#formError").html("");
+        console.log("form was valid. creating new recipe");
+        console.log("new recipe name is " + recipe_name);
+        console.log("new recipe description is " + recipe_description);
+        console.log("ingrediants are: " + ingrediants);
+        console.log("directions are:  " + cooking_instructions);
+        $.post("/addNewRecipe", { recipe_name : recipe_name, recipe_description: recipe_description, 
+        ingrediants: ingrediants, cooking_instructions: cooking_instructions, book_id : book_id }, function() {
+            console.log("recipe was added")
+            getRecipesFromBook(book_id);
+        })
+    }
+    else {
+        $("p#formError").html("Please fill in the page to add a new yummy recipe");
+    }
 }

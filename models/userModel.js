@@ -28,14 +28,14 @@ function verifyUser(username, password, callback) {
     console.log("password: " + password);
     console.log("about to verify uesr");
 
-    var sql = "SELECT password FROM general_user WHERE username=$1::text limit 1";
+    var sql = "SELECT password, id FROM general_user WHERE username=$1::text limit 1";
     var params = [username];
     console.log("sql: " + sql);
     pool.query(sql, params, function(err, result) {
         //error proccesing request
         if (err) {
             console.log("sql query did not work")
-            callback(true, false);
+            callback(true, false, null);
         }
         else {
             //check if data was returned
@@ -48,17 +48,18 @@ function verifyUser(username, password, callback) {
                 bcrypt.compare(password, hash, function(err, res) {
                     //password matched, okay to login
                     if (res == true) {
-                        callback(false, true)
+                        var userId = result.rows[0].id;
+                        callback(false, true, userId);
                     } 
                     //password was not a match, dont login
                     else {
-                        callback(false, false);
+                        callback(false, false, null);
                     }
                 });
             }
             else {
                 console.log("user does not exist");
-                callback(false, false);
+                callback(false, false, null);
             }
         }
     })
