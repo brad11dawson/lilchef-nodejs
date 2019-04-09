@@ -3,6 +3,8 @@ function gotoLogin() {
     $.get("/getLogin", function(html) {
         console.log("back from getting login screen");
         $("#main").html(html);
+        $("#signupLink").removeClass("active");
+        $("#loginLink").addClass("active");
     })
 }
 
@@ -10,6 +12,8 @@ function gotoSignup() {
     console.log("putting sign up screen on main");
     $.get("/getSignup", function(html) {
         $("#main").html(html);
+        $("#signupLink").addClass("active");
+        $("#loginLink").removeClass("active");
     })
 }
 
@@ -80,6 +84,7 @@ function loginUser() {
                 $("#title").html(username + "'s Cookbook");
                 console.log("password was correct");
                 getCookbooks();
+                setNavigation();
             }
             else {
                 $('#signInError').html("Either the password was incorrect your the username does not exist. Please try again.");
@@ -94,6 +99,7 @@ function isLoggedIn() {
     $.get("/isLoggedIn", function(isLoggedIn) {
         if(isLoggedIn) {
             getCookbooks();
+            setNavigation();
         }
     })
 }
@@ -126,19 +132,28 @@ function getCookbooks() {
           
           //print the recipe name and description for each item in the json list
           $.each(books, function(index) {
-            $("div#main").append('<li class="text-left">' + this.cookbook_name + '</li>');
-            $("div#main").append('<p class="text-left">' + this.cookbook_description + '</p>');
+            $("div#main").append('<h3 class="text-center">' + this.cookbook_name + '</h3>');
+            $("div#main").append('<p class="text-center">' + this.cookbook_description + '</p>');
             $("div#main").append('<button type="button" onclick="getRecipesFromBook(' + this.id + ')">Open Book!</button>');
             console.log("id of book: " + this.id);
         })
-        $("div#main").append('</br><button type="button" onclick="logOut()">Log Out</button>');
     })
 }
 
 function logOut() {
     $.get("/logOut", function(htmlLogin){
         $("div#main").html(htmlLogin);
-    })
+    });
+    $("#left").html('<h2>Explore</h2>\
+    <ul class="nav nav-pills nav-justified flex-column">\
+        <li class="nav-item">\
+          <a class="nav-link active" onclick="gotoLogin()" id="loginLink">Log In</a>\
+        </li>\
+        <li class="nav-item">\
+          <a class="nav-link" onclick="gotoSignup()" id="signupLink">Sign Up</a>\
+        </li>\
+    </ul>');
+    $("#title").html("<h1>Little Chef's Cookbook</h1>");
 }
 
 function getRecipesFromBook(book_id) {
@@ -174,8 +189,8 @@ function getRecipesFromBook(book_id) {
         </div>\
       </div>')
         $.each(recipes, function(index) {
-            $("div#main").append('<h2 class="text-left">' + this.recipe_name + '</h2>');
-            $("div#main").append('<p class="text-left">' + this.recipe_description + '</p>');
+            $("div#main").append('<h2 class="text-center">' + this.recipe_name + '</h2>');
+            $("div#main").append('<p class="textcenter">' + this.recipe_description + '</p>');
             $("div#main").append('<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapse' + this.id + '" aria-expanded="false" aria-controls="collapseExample">\
             Open Delicious Recipe\
             </button></br>')
@@ -189,7 +204,6 @@ function getRecipesFromBook(book_id) {
             </div>')
         })
         $("div#main").append('</br><button type="button" onclick="getCookbooks()">Go back to books</button>');
-        $("div#main").append('</br><button type="button" onclick="logOut()">Log Out</button>');
     })  
 }
 
@@ -255,4 +269,16 @@ function addRecipe(book_id) {
     else {
         $("p#formError").html("Please fill in the page to add a new yummy recipe");
     }
+}
+
+function setNavigation() {
+    $("#left").html('<h2>Explore</h2>\
+    <ul class="nav nav-pills nav-justified flex-column">\
+        <li class="nav-item">\
+        <a class="nav-link active" onclick="getCookbooks()" id="gotoBookLink">View Books</a>\
+        </li>\
+        <li class="nav-item">\
+        <a class="nav-link" onclick="logOut()" id="logoutLink">Log Out</a>\
+        </li>\
+    </ul>') 
 }

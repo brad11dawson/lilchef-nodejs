@@ -27,12 +27,6 @@ express()
     cookie: { secure: false }
   }))
   
-  /*.use(
-    function(req, res, next) {
-      console.log("the user id is:" + req.session.userId);
-      next();
-    }
-  )*/
   .get('/isLoggedIn', function(req, res) {
     console.log("checking if we are logged in");
       if (req.session.userId) {
