@@ -24,8 +24,6 @@ function createUser(username, displayname, password, callback) {
 }
 
 function verifyUser(username, password, callback) {
-    console.log("username: " + username);
-    console.log("password: " + password);
     console.log("about to verify uesr");
 
     var sql = "SELECT password, id FROM general_user WHERE username=$1::text limit 1";
@@ -42,9 +40,6 @@ function verifyUser(username, password, callback) {
             if(result.rows.length > 0) { 
                 //the hash from the database
                 var hash = result.rows[0].password;
-
-                console.log("hash being checked: " + hash);
-                
                 bcrypt.compare(password, hash, function(err, res) {
                     //password matched, okay to login
                     if (res == true) {

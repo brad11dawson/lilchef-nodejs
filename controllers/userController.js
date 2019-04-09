@@ -20,8 +20,6 @@ function loginUser(req, res) {
     console.log("logging in user in user controller");
     var username = req.body.username;
     var password = req.body.password;
-    console.log("username: " + username);
-    console.log("password: " + password);
 
     userModel.verifyUser(username, password, function(error, verified, userId) {
         if (error) {
